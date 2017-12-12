@@ -16,7 +16,7 @@ Trabajo con llamadas al sistema del Sistema de Archivos ''POSIX 2.10 compliant''
 #include<stdio.h>
 #include<errno.h>
 #include<string.h>
-#define S_ISREG2(mode) ((mode & S_IFMT) != S_IFREG)
+#define S_ISREG2(mode) ((mode & S_IFMT) == S_IFREG)
 int main(int argc, char *argv[])
 {
 int i;

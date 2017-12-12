@@ -30,7 +30,7 @@ if( (fd1=open("archivo1",O_CREAT|O_TRUNC|O_WRONLY,S_IRGRP|S_IWGRP|S_IXGRP))<0) {
 	perror("\nError en open");
 	exit(EXIT_FAILURE);
 }
-
+//pone la maskara umas a 0 por lo que no afectara de ahora en adelante a los permisos
 umask(0);
 if( (fd2=open("archivo2",O_CREAT|O_TRUNC|O_WRONLY,S_IRGRP|S_IWGRP|S_IXGRP))<0) {
 	printf("\nError %d en open(archivo2,...)",errno);
@@ -39,15 +39,19 @@ if( (fd2=open("archivo2",O_CREAT|O_TRUNC|O_WRONLY,S_IRGRP|S_IWGRP|S_IXGRP))<0) {
 }
 
 //CAMBIO DE PERMISOS
+//Se obtienen los metadatos del archivo 1
 if(stat("archivo1",&atributos) < 0) {
 	printf("\nError al intentar acceder a los atributos de archivo1");
 	perror("\nError en lstat");
 	exit(EXIT_FAILURE);
 }
+//con la primera parte  quita al grupo el permiso de ejecucion y los demas solo quedando con lectura y escrutura el grupo
+// la segunda añade se añade le el gid efectivo el propietario al el grupo
 if(chmod("archivo1", (atributos.st_mode & ~S_IXGRP) | S_ISGID) < 0) {
 	perror("\nError en chmod para archivo1");
 	exit(EXIT_FAILURE);
 }
+//usuario todos los permisos grupo lectura y escritura y otros lectura
 if(chmod("archivo2",S_IRWXU | S_IRGRP | S_IWGRP | S_IROTH) < 0) {
 	perror("\nError en chmod para archivo2");
 	exit(EXIT_FAILURE);

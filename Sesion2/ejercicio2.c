@@ -22,6 +22,7 @@ int main(int argc, char *argv[]){
 	if((directorio = opendir(argv[1])) == NULL ){
 		printf("\nError al intentar abir el directorio %s",argv[1]);
 		perror("\nError en opendir\n");
+		exit(EXIT_FAILURE);
 	}
 	chdir(argv[1]);
 	permisos_introducidos = strtol(argv[2],&endptr,8);

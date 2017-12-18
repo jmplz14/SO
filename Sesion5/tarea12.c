@@ -20,9 +20,9 @@ int main (int argc, char *argv[])
     struct sigaction act;
 //Iniciamos a 0 todos los elementos de la estructura act 
     memset (&act, 0, sizeof(act));
-
+	//se pone la funcion manejador para cuando se compla la mascara de bloque de señales
     act.sa_handler = manejador;
-
+    //se asigna para la señales 
     if (sigaction(SIGTERM, &act, 0)) {
         perror ("sigaction");
         exit(EXIT_FAILURE);
@@ -33,12 +33,13 @@ int main (int argc, char *argv[])
     //A–adimos SIGTERM al conjunto de mascaras
     sigaddset (&conjunto_mascaras, SIGTERM);
     
-    //Bloqueamos SIGTERM
+    //Bloqueamos SIGTERM(SE hace el and entre las señales que se tienian y las que hay en conjunto_mascaras)
+    //el estado anterior se alamacena en mascaras_original
     if (sigprocmask(SIG_BLOCK, &conjunto_mascaras, &conj_mascaras_original) < 0) {
        perror ("primer sigprocmask");
        exit(EXIT_FAILURE);
     }
-
+	//Si durante este tiempo se recibe un sigterm se entra en la funcion manejador pontienedo sigan_recibida = 1
     sleep (10);
 
     //Restauramos la señal – desbloqueamos SIGTERM
@@ -46,7 +47,7 @@ int main (int argc, char *argv[])
        perror ("segundo sigprocmask");
        exit(EXIT_FAILURE);
        }
-
+	
     sleep (1);
 
    if (signal_recibida)

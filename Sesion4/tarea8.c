@@ -22,6 +22,7 @@ if ( (PID= fork())<0) {
 	perror("\Error en fork");
 	exit(EXIT_FAILURE);
 }
+inicion = strtol(argv[2],NULL,10);
 if (PID == 0) { // ls
 	//Cerrar el descriptor de lectura de cauce en el proceso hijo
 	close(fd[0]);

@@ -24,10 +24,13 @@ static void mimanejador(int sigNum){
 
 int main(int argc, char *argv[]){
 	int descriptor_bloqueo, descriptor_fifo_lectura, descriptor_fifo_escritura,descriptor_bloqueo_proxys;
+	int leido_clientes, estado_leido_cliente;
+	pid_t pid_hijo;
 	struct flock fichero_bloqueo;
 	struct sigaction senales_hijos;
 	char nombre_fifo_escritura[tamano_nombres];
-	char nombre_fifo_lectura[tamano_nombres];
+	char nombre_fifo_lectura[tamano_nombres], nombre_fifo_cliente[tamano_nombres];
+	
 	
 	if(argc != 2){	
 		perror("\nError en el numero de parametros del servidor\n");
@@ -40,7 +43,7 @@ int main(int argc, char *argv[]){
 		exit(2);
 	}
 	//Se bloquea el fichero de bloqueo
-	if(flock(descriptor_bloqueo, LOCK_EX) == -1){
+	if(flock(descriptor_bloqueo, LOCK_EX|LOCK_NB) == -1){
 		perror("\nYa hay una estancia de servidor ejecutandose");
 		exit(3);
 	}
@@ -87,8 +90,30 @@ int main(int argc, char *argv[]){
 		perror("\nError al abrir fichero de bloqueo para proxys");
 		exit(2);
 	}
-	
-	
+	/*leido_clientes=read(descriptor_fifo_escritura, &estado_leido_cliente, sizeof(int));
+	printf("leidooo %d", leido_clientes);*/
+	while(1){
+		if((leido_clientes=read(descriptor_fifo_escritura, &estado_leido_cliente, sizeof(int))) != 0){
+			
+			
+			
+			pid_hijo = fork();
+			
+			
+			if(pid_hijo == 0){
+				pid_t pid = getpid();
+				int descriptor_fifo_proxy;
+				sprintf(nombre_fifo_cliente,"%d", pid);
+				mkfifo(nombre_fifo_cliente, S_IRWXU);
+				write(descriptor_fifo_lectura,nombre_fifo_cliente, sizeof(int));
+				descriptor_fifo_proxy = open(nombre_fifo_cliente, O_RDWR);
+				close(0);
+				fcntl(descriptor_fifo_proxy, F_DUPFD, 0);
+				execlp("./proxy","proxy",NULL);
+			}
+			
+		}
+	}
 	
 	//Con esto se libera el fichero que permite a otro servidor ejecutarse si no hay mas de 1 a la vez
 	close(descriptor_bloqueo);

@@ -77,6 +77,7 @@ while (contador<numcar){
     i= 0;
   }
 }
+printf("Cliente ha terminado de producir\n");
 }
 
 int main (int argc, char **argv) {  

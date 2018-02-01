@@ -1,0 +1,14 @@
+Desarrolle un programa C,utilizando llamadas al sistema y haciendo uso de los mecanismos que considere oportunos,que lleve a cabo el duplicado exacto de todos los archivos contenidos
+en un directorio fuente(primer argumento) que son de tipo regular en otro directori odestino(que pasa com osegundo argumento).si el directorio destino no existe entonces se creará.
+
+
+
+Extienda el programa anterior,de tal forma que sin utilizar la llamada al sistema nftw:
+
+
+a)el programa lanzara un nuevo proceso hijo para realizar la misma función del ejercicio anterior para cada uno de los subdirectorios contenidos en el directorio fuente
+es decir , duplicando los archivos de tipo regular que se encuentren cada uno de dichos subdirectorio en el directorio destino
+cada proceso que recorra un subdirectorio realizara la misma accion para los subdirectorios que a su vez incluya ,es decir,lanzará un nuevo proceso para recorrer cada uno de dichos subdirectorios,duplicando los archisvos regulares en el directorio destino.
+No deben quedar procesos en estado zombie.
+
+b)Cuando cada proceso acabe de recorrer y duplicar todos los archivos regulares del directorio en cuestión, comunicara por medio de un cauce a su proceso padre(o alternativamente al proceso inicial,el estudiante puede escoger entre esta segunda opción que es mas facil de implementar)el numero de archivos que ha duplicado tanto él como sus hijos , y asi repetidamente para cada proceso.El proceso inicial imprimirá en pantalla el numero total de archivos duplicados por todos los procesos
